@@ -22,7 +22,7 @@ backend/db/*.db
 .DS_Store
 
 # Build
-dist/
+# dist/  # Keep frontend/dist committed for production
 build/
 .next/
 
