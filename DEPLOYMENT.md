@@ -1,6 +1,6 @@
 # Deployment Guide - Railway
 
-## 🚀 Deploy Monday.com Clone to Railway
+## 🚀 Deploy Smart Schedule to Railway
 
 Railway is the recommended platform for this full-stack app. It handles both the Node.js backend and static frontend with automatic deployments from GitHub.
 

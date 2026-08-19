@@ -43,5 +43,5 @@ console.log('Environment:', process.env.NODE_ENV || 'development');
 console.log('Port:', PORT);
 
 app.listen(PORT, () => {
-  console.log(`✅ Monday.com Clone running on port ${PORT}`);
+  console.log(`✅ Smart Schedule running on port ${PORT}`);
 });

@@ -1,4 +1,4 @@
-# Monday.com Clone - Task Manager
+# Smart Schedule - Task Manager
 
 A full-featured task management application with Kanban board, Gantt chart, and calendar views. Built with React, Node.js, and SQLite.
 
