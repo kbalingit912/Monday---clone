@@ -4,7 +4,12 @@ const path = require('path');
 require('dotenv').config();
 
 // Initialize database
-require('./backend/db/init');
+try {
+  require('./backend/db/init');
+  console.log('Database initialized');
+} catch (error) {
+  console.error('Failed to initialize database:', error);
+}
 
 const app = express();
 
@@ -33,6 +38,10 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+console.log('Starting server...');
+console.log('Environment:', process.env.NODE_ENV || 'development');
+console.log('Port:', PORT);
+
 app.listen(PORT, () => {
-  console.log(`Monday.com Clone API running on http://localhost:${PORT}`);
+  console.log(`✅ Monday.com Clone running on port ${PORT}`);
 });
