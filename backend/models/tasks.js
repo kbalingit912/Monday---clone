@@ -1,0 +1,81 @@
+const { v4: uuidv4 } = require('uuid');
+const db = require('../db/init');
+
+const Tasks = {
+  getByColumn: (columnId, callback) => {
+    db.all('SELECT * FROM tasks WHERE column_id = ? ORDER BY position', [columnId], (err, rows) => {
+      if (err) return callback(err);
+      const parsed = rows?.map(row => ({
+        ...row,
+        labels: row.labels ? JSON.parse(row.labels) : []
+      })) || [];
+      callback(null, parsed);
+    });
+  },
+
+  getById: (id, callback) => {
+    db.get('SELECT * FROM tasks WHERE id = ?', [id], (err, row) => {
+      if (err) return callback(err);
+      if (!row) return callback(null, row);
+      callback(null, {
+        ...row,
+        labels: row.labels ? JSON.parse(row.labels) : []
+      });
+    });
+  },
+
+  create: (columnId, title, description, position, metadata, callback) => {
+    const id = uuidv4();
+    const now = new Date().toISOString();
+    const priority = metadata?.priority || 'medium';
+    const assignee = metadata?.assignee || null;
+    const due_date = metadata?.due_date || null;
+    const labels = metadata?.labels ? JSON.stringify(metadata.labels) : null;
+
+    db.run(
+      'INSERT INTO tasks (id, column_id, title, description, position, priority, assignee, due_date, labels, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, columnId, title, description, position, priority, assignee, due_date, labels, now, now],
+      function(err) {
+        callback(err, {
+          id,
+          column_id: columnId,
+          title,
+          description,
+          position,
+          priority,
+          assignee,
+          due_date,
+          labels: labels ? JSON.parse(labels) : []
+        });
+      }
+    );
+  },
+
+  update: (id, title, description, columnId, position, metadata, callback) => {
+    const now = new Date().toISOString();
+    const priority = metadata?.priority || 'medium';
+    const assignee = metadata?.assignee || null;
+    const due_date = metadata?.due_date || null;
+    const labels = metadata?.labels ? JSON.stringify(metadata.labels) : null;
+
+    db.run(
+      'UPDATE tasks SET title = ?, description = ?, column_id = ?, position = ?, priority = ?, assignee = ?, due_date = ?, labels = ?, updated_at = ? WHERE id = ?',
+      [title, description, columnId, position, priority, assignee, due_date, labels, now, id],
+      callback
+    );
+  },
+
+  delete: (id, callback) => {
+    db.run('DELETE FROM tasks WHERE id = ?', [id], callback);
+  },
+
+  reorder: (columnId, position, callback) => {
+    db.run(
+      'UPDATE tasks SET position = ? WHERE column_id = ?',
+      [position, columnId],
+      callback
+    );
+  }
+};
+
+module.exports = Tasks;
