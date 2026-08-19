@@ -1,20 +1,42 @@
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
 const distPath = path.join(__dirname, 'frontend/dist');
+const indexPath = path.join(distPath, 'index.html');
 
-// If dist doesn't exist, build it
-if (!fs.existsSync(distPath)) {
+// If dist/index.html doesn't exist, build it
+if (!fs.existsSync(indexPath)) {
   console.log('Building frontend...');
-  try {
-    execSync('cd frontend && npm install && npm run build', { stdio: 'inherit' });
-    console.log('Frontend build complete');
-  } catch (error) {
-    console.error('Frontend build failed:', error);
+
+  // Run npm install in frontend
+  console.log('Installing frontend dependencies...');
+  const installResult = spawnSync('npm', ['install'], {
+    cwd: path.join(__dirname, 'frontend'),
+    stdio: 'inherit',
+    shell: true
+  });
+
+  if (installResult.error || installResult.status !== 0) {
+    console.error('npm install failed');
     process.exit(1);
   }
+
+  // Run npm run build in frontend
+  console.log('Running build...');
+  const buildResult = spawnSync('npm', ['run', 'build'], {
+    cwd: path.join(__dirname, 'frontend'),
+    stdio: 'inherit',
+    shell: true
+  });
+
+  if (buildResult.error || buildResult.status !== 0) {
+    console.error('npm run build failed');
+    process.exit(1);
+  }
+
+  console.log('Frontend build complete');
 }
 
-// Start the server
+console.log('Starting server...');
 require('./server.js');
