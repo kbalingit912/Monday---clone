@@ -7,7 +7,9 @@ export const PRIORITY_OPTIONS = [
 
 export const DEFAULT_TAG_COLORS = ['#3b82f6', '#ec4899', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
 
-export const API_BASE_URL = 'http://localhost:5000/api';
+export const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? '/api'
+  : 'http://localhost:5000/api';
 
 export const VIEWS = {
   KANBAN: 'kanban',
