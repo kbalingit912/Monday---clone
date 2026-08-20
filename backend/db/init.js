@@ -78,18 +78,6 @@ db.serialize(() => {
     )
   `);
 
-  // Add recurring columns if they don't exist
-  db.run(`PRAGMA table_info(tasks)`, (err, rows) => {
-    if (err) return;
-    const hasRecurring = rows?.some(col => col.name === 'is_recurring');
-    if (!hasRecurring) {
-      db.run('ALTER TABLE tasks ADD COLUMN is_recurring INTEGER DEFAULT 0');
-      db.run('ALTER TABLE tasks ADD COLUMN recurrence_pattern TEXT');
-      db.run('ALTER TABLE tasks ADD COLUMN recurrence_end_date DATE');
-      db.run('ALTER TABLE tasks ADD COLUMN parent_task_id TEXT');
-    }
-  });
-
   // Tags table for autocomplete
   db.run(`
     CREATE TABLE IF NOT EXISTS tags (
