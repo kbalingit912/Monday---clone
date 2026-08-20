@@ -167,6 +167,26 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
             No tasks in To Do
           </div>
         )}
+
+        <div style={{ padding: '12px 16px', backgroundColor: '#ffffff', borderTop: '1px solid #e5e7eb', borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px' }}>
+          <button
+            onClick={() => {
+              const column = board.columns.find(c => c.name === 'To Do');
+              if (column) {
+                onEditTask({
+                  id: 'new',
+                  title: '',
+                  description: '',
+                  column_id: column.id,
+                  priority: 'medium',
+                });
+              }
+            }}
+            style={{ color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: '600', padding: '0' }}
+          >
+            + Add task
+          </button>
+        </div>
       </div>
 
       {/* In Progress Column */}
@@ -248,6 +268,26 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
             No tasks in progress
           </div>
         )}
+
+        <div style={{ padding: '12px 16px', backgroundColor: '#ffffff', borderTop: '1px solid #e5e7eb', borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px' }}>
+          <button
+            onClick={() => {
+              const column = board.columns.find(c => c.name === 'In Progress');
+              if (column) {
+                onEditTask({
+                  id: 'new',
+                  title: '',
+                  description: '',
+                  column_id: column.id,
+                  priority: 'medium',
+                });
+              }
+            }}
+            style={{ color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: '600', padding: '0' }}
+          >
+            + Add task
+          </button>
+        </div>
       </div>
 
       {/* Done Column */}
@@ -311,6 +351,26 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
             No completed tasks
           </div>
         )}
+
+        <div style={{ padding: '12px 16px', backgroundColor: '#ffffff', borderTop: '1px solid #e5e7eb', borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px' }}>
+          <button
+            onClick={() => {
+              const column = board.columns.find(c => c.name === 'Done');
+              if (column) {
+                onEditTask({
+                  id: 'new',
+                  title: '',
+                  description: '',
+                  column_id: column.id,
+                  priority: 'medium',
+                });
+              }
+            }}
+            style={{ color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: '600', padding: '0' }}
+          >
+            + Add task
+          </button>
+        </div>
       </div>
     </div>
   );
