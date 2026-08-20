@@ -3,6 +3,7 @@ import { useState } from 'react';
 export function TradingJournal() {
   const [trades, setTrades] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     symbol: 'XAU/USD',
@@ -46,6 +47,85 @@ export function TradingJournal() {
 
   const handleDeleteTrade = (id) => {
     setTrades(trades.filter(t => t.id !== id));
+  };
+
+  const parseCSV = (text) => {
+    const lines = text.split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    const importedTrades = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const values = line.split(',').map(v => v.trim());
+      const row = {};
+      headers.forEach((header, idx) => {
+        row[header] = values[idx] || '';
+      });
+
+      // Skip empty trade rows
+      if (!row['Date'] && !row['Entry'] && !row['Exit']) continue;
+
+      const entry = parseFloat(row['Entry']) || 0;
+      const exit = parseFloat(row['Exit']) || 0;
+      const lots = parseFloat(row['Lots']) || 1;
+      const pnl = parseFloat(row['P/L $']) || (exit - entry) * lots;
+
+      const trade = {
+        id: Date.now() + Math.random(),
+        tradeNum: row['Trade #'] || '',
+        date: row['Date'] || new Date().toISOString().split('T')[0],
+        symbol: 'XAU/USD',
+        session: row['Session'] || '',
+        direction: row['Direction'] || '',
+        setup: row['Setup'] || '',
+        entryPrice: entry.toString(),
+        stopLoss: row['Stop Loss'] || '',
+        takeProfit: row['Take Profit'] || '',
+        exitPrice: exit.toString(),
+        positionSize: lots.toString(),
+        riskAmount: row['Risk $'] || '',
+        pnl: pnl.toFixed(2),
+        rMultiple: row['R-Multiple'] || '',
+        result: row['Result'] || '',
+        timeframe: row['Timeframe'] || '',
+        marketCondition: row['Market Condition'] || '',
+        entryReason: row['Entry Reason'] || '',
+        exitReason: row['Exit Reason'] || '',
+        emotionBefore: row['Emotion Before'] || '',
+        emotionAfter: row['Emotion After'] || '',
+        ruleFollowed: row['Rule Followed?'] || '',
+        lesson: row['Lesson'] || '',
+        notes: `${row['Entry Reason'] || ''} → ${row['Exit Reason'] || ''}`,
+        returnPercent: entry > 0 ? ((pnl / (entry * lots)) * 100).toFixed(2) : '0'
+      };
+
+      if (entry > 0 || exit > 0) {
+        importedTrades.push(trade);
+      }
+    }
+
+    return importedTrades;
+  };
+
+  const handleCSVImport = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const csv = e.target?.result;
+        const importedTrades = parseCSV(csv);
+        setTrades([...importedTrades, ...trades]);
+        alert(`✅ Successfully imported ${importedTrades.length} trades!`);
+        event.target.value = ''; // Reset file input
+      } catch (error) {
+        alert('❌ Error importing CSV: ' + error.message);
+      }
+    };
+    reader.readAsText(file);
   };
 
   const totalPnL = trades.reduce((sum, t) => sum + parseFloat(t.pnl), 0).toFixed(2);
@@ -99,11 +179,29 @@ export function TradingJournal() {
         </div>
       </div>
 
-      {/* Add Trade Button */}
-      <button
-        onClick={() => setShowForm(!showForm)}
-        style={{
-          backgroundColor: '#2563eb',
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          style={{
+            backgroundColor: '#2563eb',
+            color: '#ffffff',
+            border: 'none',
+            padding: '12px 24px',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+        >
+          {showForm ? '✕ Cancel' : '+ Add Trade'}
+        </button>
+
+        <label style={{
+          backgroundColor: '#10b981',
           color: '#ffffff',
           border: 'none',
           padding: '12px 24px',
@@ -111,14 +209,18 @@ export function TradingJournal() {
           fontSize: '14px',
           fontWeight: '600',
           cursor: 'pointer',
-          marginBottom: '24px',
-          transition: 'all 0.2s'
-        }}
-        onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
-      >
-        {showForm ? '✕ Cancel' : '+ Add Trade'}
-      </button>
+          transition: 'all 0.2s',
+          display: 'inline-block'
+        }}>
+          📥 Import CSV
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleCSVImport}
+            style={{ display: 'none' }}
+          />
+        </label>
+      </div>
 
       {/* Trade Form */}
       {showForm && (
