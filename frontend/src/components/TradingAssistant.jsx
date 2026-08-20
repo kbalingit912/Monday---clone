@@ -2,7 +2,7 @@ export function TradingAssistant() {
   return (
     <div style={{ display: 'flex', height: '100%', width: '100%', backgroundColor: '#f9fafb' }}>
       <iframe
-        src="https://claude-production-382b.railway.app"
+        src="https://claude-production-382b.up.railway.app/"
         style={{
           width: '100%',
           height: '100%',
