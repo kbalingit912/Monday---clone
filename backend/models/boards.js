@@ -44,7 +44,25 @@ const Boards = {
       'INSERT INTO boards (id, project_id, name) VALUES (?, ?, ?)',
       [id, projectId, name],
       function(err) {
-        callback(err, { id, project_id: projectId, name });
+        if (err) return callback(err);
+
+        // Create default columns
+        const defaultColumns = ['To Do', 'In Progress', 'Done'];
+        let created = 0;
+
+        defaultColumns.forEach((colName, index) => {
+          const colId = uuidv4();
+          db.run(
+            'INSERT INTO columns (id, board_id, name, position) VALUES (?, ?, ?, ?)',
+            [colId, id, colName, index],
+            (err) => {
+              created++;
+              if (created === defaultColumns.length) {
+                callback(null, { id, project_id: projectId, name });
+              }
+            }
+          );
+        });
       }
     );
   },
