@@ -134,8 +134,6 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
                     column_id: column.id,
                     priority: 'medium',
                   });
-                } else {
-                  showToast('Could not find To Do column', 'error');
                 }
               }}
             />
@@ -157,8 +155,6 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
                     column_id: column.id,
                     priority: 'medium',
                   });
-                } else {
-                  showToast('Could not find In Progress column', 'error');
                 }
               }}
             />
@@ -180,8 +176,6 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
                     column_id: column.id,
                     priority: 'medium',
                   });
-                } else {
-                  showToast('Could not find Done column', 'error');
                 }
               }}
             />
