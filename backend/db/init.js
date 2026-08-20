@@ -64,6 +64,7 @@ db.serialize(() => {
       description TEXT,
       position INTEGER DEFAULT 0,
       priority TEXT DEFAULT 'medium',
+      status TEXT DEFAULT 'not started',
       assignee TEXT,
       due_date DATE,
       labels TEXT,

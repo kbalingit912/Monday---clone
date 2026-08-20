@@ -100,6 +100,54 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
     }));
   };
 
+  const handleStatusChange = async (task, newStatus) => {
+    try {
+      await tasksAPI.update(task.id, task.title, task.description, task.column_id, task.position, {
+        priority: task.priority,
+        status: newStatus,
+        assignee: task.assignee,
+        due_date: task.due_date,
+        labels: task.labels,
+        is_recurring: task.is_recurring,
+        recurrence_pattern: task.recurrence_pattern,
+        recurrence_end_date: task.recurrence_end_date
+      });
+      await onRefresh?.();
+    } catch (err) {
+      console.error('Failed to update status:', err);
+    }
+  };
+
+  const getStatusBgColor = (status) => {
+    switch (status) {
+      case 'not started':
+        return '#f3f4f6';
+      case 'in progress':
+        return '#fef3c7';
+      case 'stuck':
+        return '#fee2e2';
+      case 'done':
+        return '#d1fae5';
+      default:
+        return '#f3f4f6';
+    }
+  };
+
+  const getStatusTextColor = (status) => {
+    switch (status) {
+      case 'not started':
+        return '#4b5563';
+      case 'in progress':
+        return '#92400e';
+      case 'stuck':
+        return '#991b1b';
+      case 'done':
+        return '#065f46';
+      default:
+        return '#4b5563';
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
@@ -170,9 +218,26 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
 
                 {/* Status */}
                 <td style={{ padding: '12px 16px', width: '140px', textAlign: 'center' }}>
-                  <span style={{ padding: '4px 12px', backgroundColor: '#f3f4f6', borderRadius: '12px', fontSize: '12px', fontWeight: '500', color: '#4b5563' }}>
-                    Not started
-                  </span>
+                  <select
+                    value={task.status || 'not started'}
+                    onChange={(e) => handleStatusChange(task, e.target.value)}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: getStatusBgColor(task.status || 'not started'),
+                      color: getStatusTextColor(task.status || 'not started'),
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textTransform: 'capitalize'
+                    }}
+                  >
+                    <option value="not started">Not started</option>
+                    <option value="in progress">In progress</option>
+                    <option value="stuck">Stuck</option>
+                    <option value="done">Done</option>
+                  </select>
                 </td>
 
                 {/* Due Date */}
@@ -279,9 +344,26 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
                   )}
                 </td>
                 <td style={{ padding: '12px 16px', width: '140px', textAlign: 'center' }}>
-                  <span style={{ padding: '4px 12px', backgroundColor: '#fef3c7', borderRadius: '12px', fontSize: '12px', fontWeight: '500', color: '#92400e' }}>
-                    In progress
-                  </span>
+                  <select
+                    value={task.status || 'in progress'}
+                    onChange={(e) => handleStatusChange(task, e.target.value)}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: getStatusBgColor(task.status || 'in progress'),
+                      color: getStatusTextColor(task.status || 'in progress'),
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textTransform: 'capitalize'
+                    }}
+                  >
+                    <option value="not started">Not started</option>
+                    <option value="in progress">In progress</option>
+                    <option value="stuck">Stuck</option>
+                    <option value="done">Done</option>
+                  </select>
                 </td>
                 <td style={{ padding: '12px 16px', width: '100px', textAlign: 'center', fontSize: '13px', color: '#6b7280' }}>
                   {formatDate(task.due_date)}
@@ -368,9 +450,26 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
                   </button>
                 </td>
                 <td style={{ padding: '12px 16px', width: '140px', textAlign: 'center' }}>
-                  <span style={{ padding: '4px 12px', backgroundColor: '#d1fae5', borderRadius: '12px', fontSize: '12px', fontWeight: '500', color: '#065f46' }}>
-                    Done
-                  </span>
+                  <select
+                    value={task.status || 'done'}
+                    onChange={(e) => handleStatusChange(task, e.target.value)}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: getStatusBgColor(task.status || 'done'),
+                      color: getStatusTextColor(task.status || 'done'),
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textTransform: 'capitalize'
+                    }}
+                  >
+                    <option value="not started">Not started</option>
+                    <option value="in progress">In progress</option>
+                    <option value="stuck">Stuck</option>
+                    <option value="done">Done</option>
+                  </select>
                 </td>
                 <td style={{ padding: '12px 16px', width: '100px', textAlign: 'center', fontSize: '13px', color: '#6b7280' }}>
                   {formatDate(task.due_date)}

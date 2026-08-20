@@ -28,6 +28,7 @@ const Tasks = {
     const id = uuidv4();
     const now = new Date().toISOString();
     const priority = metadata?.priority || 'medium';
+    const status = metadata?.status || 'not started';
     const assignee = metadata?.assignee || null;
     const due_date = metadata?.due_date || null;
     const labels = metadata?.labels ? JSON.stringify(metadata.labels) : null;
@@ -35,12 +36,9 @@ const Tasks = {
     const recurrence_pattern = metadata?.recurrence_pattern || null;
     const recurrence_end_date = metadata?.recurrence_end_date || null;
 
-    console.log('Tasks.create() - metadata:', metadata);
-    console.log('Tasks.create() - extracted recurring:', { is_recurring, recurrence_pattern, recurrence_end_date });
-
     db.run(
-      'INSERT INTO tasks (id, column_id, title, description, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, columnId, title, description, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, now, now],
+      'INSERT INTO tasks (id, column_id, title, description, position, priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, columnId, title, description, position, priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, now, now],
       function(err) {
         if (err) console.error('INSERT ERROR:', err);
         callback(err, {
@@ -50,6 +48,7 @@ const Tasks = {
           description,
           position,
           priority,
+          status,
           assignee,
           due_date,
           labels: labels ? JSON.parse(labels) : [],
@@ -64,6 +63,7 @@ const Tasks = {
   update: (id, title, description, columnId, position, metadata, callback) => {
     const now = new Date().toISOString();
     const priority = metadata?.priority || 'medium';
+    const status = metadata?.status || 'not started';
     const assignee = metadata?.assignee || null;
     const due_date = metadata?.due_date || null;
     const labels = metadata?.labels ? JSON.stringify(metadata.labels) : null;
@@ -72,8 +72,8 @@ const Tasks = {
     const recurrence_end_date = metadata?.recurrence_end_date || null;
 
     db.run(
-      'UPDATE tasks SET title = ?, description = ?, column_id = ?, position = ?, priority = ?, assignee = ?, due_date = ?, labels = ?, is_recurring = ?, recurrence_pattern = ?, recurrence_end_date = ?, updated_at = ? WHERE id = ?',
-      [title, description, columnId, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, now, id],
+      'UPDATE tasks SET title = ?, description = ?, column_id = ?, position = ?, priority = ?, status = ?, assignee = ?, due_date = ?, labels = ?, is_recurring = ?, recurrence_pattern = ?, recurrence_end_date = ?, updated_at = ? WHERE id = ?',
+      [title, description, columnId, position, priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, now, id],
       callback
     );
   },

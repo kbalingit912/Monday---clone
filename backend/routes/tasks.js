@@ -21,25 +21,23 @@ router.get('/:id', (req, res) => {
 
 // Create task
 router.post('/', (req, res) => {
-  const { columnId, title, description, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date } = req.body;
+  const { columnId, title, description, position, priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date } = req.body;
   if (!columnId || !title) return res.status(400).json({ error: 'Column ID and title are required' });
 
-  const metadata = { priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date };
-  console.log('POST /tasks - received metadata:', metadata);
+  const metadata = { priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date };
   Tasks.create(columnId, title, description || '', position || 0, metadata, (err, task) => {
     if (err) return res.status(500).json({ error: err.message });
-    console.log('POST /tasks - created task:', task);
     res.status(201).json(task);
   });
 });
 
 // Update task (including moving between columns and metadata)
 router.put('/:id', (req, res) => {
-  const { title, description, columnId, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date } = req.body;
-  const metadata = { priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date };
+  const { title, description, columnId, position, priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date } = req.body;
+  const metadata = { priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date };
   Tasks.update(req.params.id, title, description, columnId, position, metadata, (err) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ id: req.params.id, title, description, columnId, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date });
+    res.json({ id: req.params.id, title, description, columnId, position, priority, status, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date });
   });
 });
 
