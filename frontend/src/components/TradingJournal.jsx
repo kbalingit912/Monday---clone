@@ -398,25 +398,22 @@ export function TradingJournal() {
                 key={trade.id}
                 style={{
                   backgroundColor: '#ffffff',
-                  padding: '16px',
+                  padding: '20px',
                   borderRadius: '8px',
                   borderLeft: `4px solid ${parseFloat(trade.pnl) > 0 ? '#10b981' : '#ef4444'}`,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                  marginBottom: '16px'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
-                  <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '600' }}>
-                      {trade.symbol}
-                    </p>
-                    <p style={{ margin: 0, fontSize: '12px', color: '#9ca3af' }}>
-                      {new Date(trade.date).toLocaleDateString()}
-                    </p>
-                  </div>
+                {/* Header with Trade # and P&L */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid #e5e7eb' }}>
+                  <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+                    Trade #{trade.tradeNum || '—'}
+                  </h4>
                   <div style={{ textAlign: 'right' }}>
                     <p style={{
                       margin: '0 0 4px 0',
-                      fontSize: '16px',
+                      fontSize: '18px',
                       fontWeight: 'bold',
                       color: parseFloat(trade.pnl) > 0 ? '#10b981' : '#ef4444'
                     }}>
@@ -425,34 +422,128 @@ export function TradingJournal() {
                     <p style={{
                       margin: 0,
                       fontSize: '12px',
-                      color: parseFloat(trade.returnPercent) > 0 ? '#10b981' : '#ef4444'
+                      color: parseFloat(trade.returnPercent) > 0 ? '#10b981' : '#ef4444',
+                      fontWeight: '600'
                     }}>
-                      {trade.returnPercent > 0 ? '+' : ''}{trade.returnPercent}%
+                      {trade.returnPercent > 0 ? '+' : ''}{trade.returnPercent}% | R: {trade.rMultiple || '—'}
                     </p>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px', fontSize: '13px' }}>
+                {/* Trade Details Grid - Vertical Format */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px', fontSize: '13px' }}>
                   <div>
-                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af' }}>Entry</p>
-                    <p style={{ margin: 0, fontWeight: '600' }}>${trade.entryPrice}</p>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Date</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.date}</p>
                   </div>
                   <div>
-                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af' }}>Exit</p>
-                    <p style={{ margin: 0, fontWeight: '600' }}>${trade.exitPrice}</p>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Session</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.session || '—'}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Direction</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.direction || '—'}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Setup</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.setup || '—'}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Entry Price</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>${trade.entryPrice}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Exit Price</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>${trade.exitPrice}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Stop Loss</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.stopLoss || '—'}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Take Profit</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.takeProfit || '—'}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Lots/Position Size</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.positionSize}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Risk Amount</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>${trade.riskAmount || '—'}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Result</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.result || '—'}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Timeframe</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.timeframe || '—'}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Market Condition</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.marketCondition || '—'}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Rule Followed?</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.ruleFollowed || '—'}</p>
                   </div>
                 </div>
 
+                {/* Entry/Exit Reasons */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '12px' }}>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500', fontSize: '13px' }}>Entry Reason</p>
+                    <p style={{ margin: 0, fontWeight: '500', fontSize: '13px', color: '#374151' }}>{trade.entryReason || '—'}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500', fontSize: '13px' }}>Exit Reason</p>
+                    <p style={{ margin: 0, fontWeight: '500', fontSize: '13px', color: '#374151' }}>{trade.exitReason || '—'}</p>
+                  </div>
+                </div>
+
+                {/* Emotions */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px', fontSize: '13px' }}>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Emotion Before</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.emotionBefore || '—'}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', color: '#9ca3af', fontWeight: '500' }}>Emotion After</p>
+                    <p style={{ margin: 0, fontWeight: '600', fontSize: '14px' }}>{trade.emotionAfter || '—'}</p>
+                  </div>
+                </div>
+
+                {/* Lesson Learned */}
+                {trade.lesson && (
+                  <div style={{
+                    backgroundColor: '#f0fdf4',
+                    padding: '12px',
+                    borderRadius: '6px',
+                    borderLeft: '4px solid #10b981',
+                    marginBottom: '16px'
+                  }}>
+                    <p style={{ margin: '0 0 4px 0', color: '#059669', fontWeight: '600', fontSize: '12px' }}>💡 Lesson Learned</p>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#065f46' }}>{trade.lesson}</p>
+                  </div>
+                )}
+
+                {/* Notes */}
                 {trade.notes && (
                   <div style={{
                     backgroundColor: '#f3f4f6',
-                    padding: '8px',
-                    borderRadius: '4px',
-                    fontSize: '13px',
-                    color: '#4b5563',
-                    marginBottom: '12px'
+                    padding: '12px',
+                    borderRadius: '6px',
+                    marginBottom: '16px'
                   }}>
-                    {trade.notes}
+                    <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontWeight: '600', fontSize: '12px' }}>📝 Notes</p>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#4b5563' }}>{trade.notes}</p>
                   </div>
                 )}
 
@@ -464,11 +555,12 @@ export function TradingJournal() {
                     border: 'none',
                     cursor: 'pointer',
                     fontSize: '12px',
-                    fontWeight: '500',
-                    padding: 0
+                    fontWeight: '600',
+                    padding: 0,
+                    textDecoration: 'underline'
                   }}
                 >
-                  Delete Trade
+                  🗑️ Delete Trade
                 </button>
               </div>
             ))}
