@@ -125,7 +125,6 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
               }}
               onDelete={handleDeleteTask}
               onAddTask={() => {
-                // Create new task in To Do column
                 const column = boardData?.columns?.find((c) => c.name === 'To Do');
                 if (column) {
                   setSelectedTask({
@@ -135,6 +134,8 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
                     column_id: column.id,
                     priority: 'medium',
                   });
+                } else {
+                  showToast('Could not find To Do column', 'error');
                 }
               }}
             />
