@@ -17,6 +17,8 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
   const [currentView, setCurrentView] = useState('sections');
   const [toast, setToast] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState(boardData?.name || '');
 
   useEffect(() => {
     loadBoard();
@@ -49,6 +51,23 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
     } catch (err) {
       console.error('Failed to delete task:', err);
       showToast('Failed to delete task', 'error');
+    }
+  };
+
+  const handleSaveBoardName = async () => {
+    if (!editedName.trim()) {
+      showToast('Board name cannot be empty', 'error');
+      return;
+    }
+
+    try {
+      await boardsAPI.update(boardData.id, editedName);
+      setBoardData({ ...boardData, name: editedName });
+      setIsEditingName(false);
+      showToast('Board renamed successfully', 'success');
+    } catch (err) {
+      console.error('Failed to rename board:', err);
+      showToast('Failed to rename board', 'error');
     }
   };
 
@@ -160,7 +179,81 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
             >
               ← Back
             </button>
-            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{boardData?.name}</h2>
+            {isEditingName ? (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  style={{
+                    fontSize: '32px',
+                    fontWeight: 'bold',
+                    color: '#111827',
+                    border: '2px solid #2563eb',
+                    borderRadius: '6px',
+                    padding: '8px',
+                    maxWidth: '400px',
+                  }}
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveBoardName();
+                    if (e.key === 'Escape') setIsEditingName(false);
+                  }}
+                />
+                <button
+                  onClick={handleSaveBoardName}
+                  style={{
+                    padding: '6px 12px',
+                    backgroundColor: '#10b981',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                  }}
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => {
+                    setIsEditingName(false);
+                    setEditedName(boardData?.name);
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{boardData?.name}</h2>
+                <button
+                  onClick={() => setIsEditingName(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                    color: '#9ca3af',
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = '#2563eb')}
+                  onMouseLeave={(e) => (e.target.style.color = '#9ca3af')}
+                  title="Edit board name"
+                >
+                  ✏️
+                </button>
+              </div>
+            )}
           </div>
           <SearchBar onSearch={() => {}} />
         </div>
