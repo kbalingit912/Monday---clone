@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { BoardContent } from './BoardContent';
+import { TradingAssistant } from './TradingAssistant';
 import { projectsAPI, boardsAPI } from '../api';
 
 export function MainLayout() {
@@ -9,6 +10,7 @@ export function MainLayout() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedBoard, setSelectedBoard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentView, setCurrentView] = useState('tasks'); // 'tasks' or 'trading'
 
   useEffect(() => {
     loadProjects();
@@ -106,20 +108,91 @@ export function MainLayout() {
         onCreateBoard={handleCreateBoard}
       />
 
-      {selectedBoard ? (
-        <BoardContent
-          board={selectedBoard}
-          project={selectedProject}
-          onBack={() => setSelectedBoard(null)}
-          onRefresh={loadProjects}
-        />
-      ) : (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-gray-500 text-lg">Select a board to get started</p>
-          </div>
+      <div className="flex-1 flex flex-col">
+        {/* View Switcher */}
+        <div style={{ borderBottomColor: '#e5e7eb', borderBottomWidth: '1px', paddingLeft: '24px', paddingRight: '24px', paddingTop: '16px', paddingBottom: '16px', backgroundColor: '#ffffff', display: 'flex', gap: '8px' }}>
+          <button
+            onClick={() => setCurrentView('tasks')}
+            style={{
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              paddingTop: '8px',
+              paddingBottom: '8px',
+              borderRadius: '6px',
+              background: currentView === 'tasks' ? '#2563eb' : 'transparent',
+              color: currentView === 'tasks' ? '#ffffff' : '#4b5563',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              if (currentView !== 'tasks') {
+                e.target.style.backgroundColor = '#e5e7eb';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentView !== 'tasks') {
+                e.target.style.backgroundColor = 'transparent';
+              }
+            }}
+          >
+            📋 Task Manager
+          </button>
+          <button
+            onClick={() => setCurrentView('trading')}
+            style={{
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              paddingTop: '8px',
+              paddingBottom: '8px',
+              borderRadius: '6px',
+              background: currentView === 'trading' ? '#2563eb' : 'transparent',
+              color: currentView === 'trading' ? '#ffffff' : '#4b5563',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              if (currentView !== 'trading') {
+                e.target.style.backgroundColor = '#e5e7eb';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentView !== 'trading') {
+                e.target.style.backgroundColor = 'transparent';
+              }
+            }}
+          >
+            💰 Trading Assistant
+          </button>
         </div>
-      )}
+
+        {/* Content */}
+        {currentView === 'tasks' ? (
+          selectedBoard ? (
+            <BoardContent
+              board={selectedBoard}
+              project={selectedProject}
+              onBack={() => setSelectedBoard(null)}
+              onRefresh={loadProjects}
+            />
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-gray-500 text-lg">Select a board to get started</p>
+              </div>
+            </div>
+          )
+        ) : (
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <TradingAssistant />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
