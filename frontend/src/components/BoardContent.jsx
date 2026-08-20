@@ -147,66 +147,60 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
+    <div className="flex-1 flex flex-col" style={{ backgroundColor: '#f9fafb' }}>
       {/* Header */}
-      <div className="border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between mb-4">
+      <div style={{ borderBottomColor: '#e5e7eb', borderBottomWidth: '1px', paddingLeft: '24px', paddingRight: '24px', paddingTop: '16px', paddingBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-900 font-medium mb-2"
+              style={{ color: '#4b5563', fontWeight: '500', marginBottom: '8px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+              onMouseEnter={(e) => (e.target.style.color = '#111827')}
+              onMouseLeave={(e) => (e.target.style.color = '#4b5563')}
             >
               ← Back
             </button>
-            <h2 className="text-3xl font-bold text-gray-900">{boardData?.name}</h2>
+            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{boardData?.name}</h2>
           </div>
           <SearchBar onSearch={() => {}} />
         </div>
       </div>
 
       {/* View Switcher */}
-      <div className="border-b border-gray-200 px-6 py-2 bg-gray-50">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setCurrentView('sections')}
-            className={`px-3 py-2 rounded-lg transition ${
-              currentView === 'sections'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Tasks
-          </button>
-          <button
-            onClick={() => setCurrentView('kanban')}
-            className={`px-3 py-2 rounded-lg transition ${
-              currentView === 'kanban'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Kanban
-          </button>
-          <button
-            onClick={() => setCurrentView('gantt')}
-            className={`px-3 py-2 rounded-lg transition ${
-              currentView === 'gantt'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Gantt
-          </button>
-          <button
-            onClick={() => setCurrentView('calendar')}
-            className={`px-3 py-2 rounded-lg transition ${
-              currentView === 'calendar'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Calendar
-          </button>
+      <div style={{ borderBottomColor: '#e5e7eb', borderBottomWidth: '1px', paddingLeft: '24px', paddingRight: '24px', paddingTop: '8px', paddingBottom: '8px', backgroundColor: '#f3f4f6' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {['sections', 'kanban', 'gantt', 'calendar'].map((view) => (
+            <button
+              key={view}
+              onClick={() => setCurrentView(view)}
+              style={{
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                paddingTop: '8px',
+                paddingBottom: '8px',
+                borderRadius: '6px',
+                transition: 'all 0.2s',
+                background: currentView === view ? '#2563eb' : 'transparent',
+                color: currentView === view ? '#ffffff' : '#4b5563',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+              }}
+              onMouseEnter={(e) => {
+                if (currentView !== view) {
+                  e.target.style.backgroundColor = '#e5e7eb';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (currentView !== view) {
+                  e.target.style.backgroundColor = 'transparent';
+                }
+              }}
+            >
+              {view.charAt(0).toUpperCase() + view.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
 

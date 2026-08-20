@@ -3,25 +3,32 @@ export function ProgressIndicator({ completed, total, overdue = 0 }) {
   const remaining = total - completed;
 
   return (
-    <div className="bg-white rounded-lg p-4 mb-6 border border-gray-200">
-      <div className="flex items-center justify-between mb-3">
+    <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', padding: '16px', marginBottom: '24px', border: '1px solid #e5e7eb' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
         <div>
-          <h3 className="font-semibold text-gray-900">{completed} / {total} done</h3>
-          <p className="text-sm text-gray-600">{remaining} remaining</p>
+          <h3 style={{ fontWeight: '600', fontSize: '16px', color: '#111827' }}>
+            {completed} / {total} done
+          </h3>
+          <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>{remaining} remaining</p>
         </div>
         {overdue > 0 && (
-          <div className="flex items-center gap-1 bg-red-50 px-3 py-1 rounded-full">
-            <span className="text-red-600 font-semibold text-lg">●</span>
-            <span className="text-red-700 text-sm font-medium">Due & overdue {overdue}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fef2f2', paddingLeft: '12px', paddingRight: '12px', paddingTop: '4px', paddingBottom: '4px', borderRadius: '20px' }}>
+            <span style={{ color: '#dc2626', fontWeight: 'bold', fontSize: '18px' }}>●</span>
+            <span style={{ color: '#991b1b', fontSize: '14px', fontWeight: '500' }}>Due & overdue {overdue}</span>
           </div>
         )}
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '8px' }}>
         <div
-          className="bg-green-500 h-2 rounded-full transition-all duration-300"
-          style={{ width: `${percentage}%` }}
+          style={{
+            backgroundColor: '#10b981',
+            height: '8px',
+            borderRadius: '9999px',
+            transition: 'width 0.3s ease',
+            width: `${percentage}%`,
+          }}
         />
       </div>
     </div>
