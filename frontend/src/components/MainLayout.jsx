@@ -12,6 +12,20 @@ export function MainLayout() {
 
   useEffect(() => {
     loadProjects();
+
+    // Listen for project creation events
+    const handleCreateProject = async (e) => {
+      const { name } = e.detail;
+      try {
+        await projectsAPI.create(name, '');
+        await loadProjects();
+      } catch (err) {
+        console.error('Failed to create project:', err);
+      }
+    };
+
+    window.addEventListener('createProject', handleCreateProject);
+    return () => window.removeEventListener('createProject', handleCreateProject);
   }, []);
 
   const loadProjects = async () => {

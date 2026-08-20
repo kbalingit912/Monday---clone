@@ -20,7 +20,24 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
       <div className="flex-1 overflow-y-auto p-4">
         {/* Binders Section */}
         <div className="mb-6">
-          <h2 className="text-xs uppercase font-bold text-slate-400 px-3 mb-3">Binders</h2>
+          <div className="flex items-center justify-between px-3 mb-3">
+            <h2 className="text-xs uppercase font-bold text-slate-400">Binders</h2>
+            <button
+              onClick={() => {
+                const projectName = prompt('Enter project name:');
+                if (projectName) {
+                  // Trigger create project
+                  window.dispatchEvent(
+                    new CustomEvent('createProject', { detail: { name: projectName } })
+                  );
+                }
+              }}
+              className="text-slate-400 hover:text-slate-200 text-lg"
+              title="Create new project"
+            >
+              +
+            </button>
+          </div>
           <div className="space-y-1">
             {projects.map((project) => (
               <div key={project.id}>
