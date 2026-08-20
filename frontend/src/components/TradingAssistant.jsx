@@ -37,13 +37,19 @@ export function TradingAssistant() {
         <span style={{ color: '#9ca3af', fontSize: '12px' }}>XAU/USD Trading Analyzer</span>
       </div>
 
-      {/* Iframe Container with overlay styling */}
+      {/* Iframe Container with color adjustments */}
       <div style={{
         flex: 1,
         overflow: 'hidden',
         position: 'relative',
-        backgroundColor: '#f9fafb'
+        backgroundColor: '#ffffff'
       }}>
+        <style>{`
+          iframe {
+            filter: invert(1) hue-rotate(180deg) brightness(1.1);
+            background-color: #ffffff !important;
+          }
+        `}</style>
         <iframe
           src="https://claude-production-382b.up.railway.app/"
           style={{
@@ -51,7 +57,8 @@ export function TradingAssistant() {
             height: '100%',
             border: 'none',
             borderRadius: '0px',
-            display: 'block'
+            display: 'block',
+            filter: 'invert(1) hue-rotate(180deg) brightness(1.1)'
           }}
           title="XAU/USD Analyzer - Trading Assistant"
           allowFullScreen
