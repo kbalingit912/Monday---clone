@@ -12,12 +12,13 @@ export function TradingAssistant() {
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #e5e7eb',
         display: 'flex',
-        gap: '12px'
+        gap: '12px',
+        alignItems: 'center'
       }}>
         <button
           onClick={() => setShowNewsBrief(true)}
           style={{
-            backgroundColor: '#10b981',
+            backgroundColor: '#2563eb',
             color: '#ffffff',
             border: 'none',
             padding: '10px 24px',
@@ -25,17 +26,24 @@ export function TradingAssistant() {
             fontSize: '14px',
             fontWeight: '600',
             cursor: 'pointer',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = '#059669'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = '#10b981'}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
         >
           📰 Pull News Brief
         </button>
+        <span style={{ color: '#9ca3af', fontSize: '12px' }}>XAU/USD Trading Analyzer</span>
       </div>
 
-      {/* Iframe Container */}
-      <div style={{ flex: 1, overflow: 'hidden' }}>
+      {/* Iframe Container with overlay styling */}
+      <div style={{
+        flex: 1,
+        overflow: 'hidden',
+        position: 'relative',
+        backgroundColor: '#f9fafb'
+      }}>
         <iframe
           src="https://claude-production-382b.up.railway.app/"
           style={{
@@ -43,6 +51,7 @@ export function TradingAssistant() {
             height: '100%',
             border: 'none',
             borderRadius: '0px',
+            display: 'block'
           }}
           title="XAU/USD Analyzer - Trading Assistant"
           allowFullScreen
