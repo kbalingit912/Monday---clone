@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ProgressIndicator } from './ProgressIndicator';
-import { TaskSection } from './TaskSection';
 import { TaskDetailsModal } from './TaskDetailsModal';
 import { Toast } from './Toast';
 import { boardsAPI, tasksAPI } from '../api';
 import { SearchBar } from './SearchBar';
-import { ViewSwitcher } from './ViewSwitcher';
-import { KanbanView } from './KanbanView';
-import { GanttView } from './GanttView';
+import { TasksListView } from './TasksListView';
 import { CalendarView } from './CalendarView';
 
 export function BoardContent({ board, project, onBack, onRefresh }) {
@@ -92,100 +88,17 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
 
   const renderView = () => {
     switch (currentView) {
-      case 'gantt':
-        return <GanttView board={boardData} onEditTask={setSelectedTask} onRefresh={loadBoard} />;
       case 'calendar':
         return <CalendarView board={boardData} onEditTask={setSelectedTask} onRefresh={loadBoard} />;
-      case 'kanban':
+      case 'sections':
+      default:
         return (
-          <KanbanView
+          <TasksListView
             board={boardData}
             onEditTask={setSelectedTask}
             onDeleteTask={handleDeleteTask}
             onRefresh={loadBoard}
           />
-        );
-      case 'sections':
-      default:
-        return (
-          <div className="flex-1 overflow-y-auto p-6">
-            <ProgressIndicator
-              completed={doneTasks.length}
-              total={allTasks.length}
-              overdue={overdueCount}
-            />
-
-            <TaskSection
-              title="To do"
-              tasks={todoTasks}
-              column={boardData?.columns?.find((c) => c.name === 'To Do')}
-              count={todoTasks.length}
-              onUpdate={(task) => {
-                setSelectedTask(task);
-              }}
-              onDelete={handleDeleteTask}
-              onAddTask={() => {
-                console.log('onAddTask called, boardData:', boardData);
-                const column = boardData?.columns?.find((c) => c.name === 'To Do');
-                console.log('Found column:', column);
-                if (column) {
-                  const newTask = {
-                    id: 'new',
-                    title: '',
-                    description: '',
-                    column_id: column.id,
-                    priority: 'medium',
-                  };
-                  console.log('Setting task:', newTask);
-                  setSelectedTask(newTask);
-                } else {
-                  console.log('Column not found');
-                }
-              }}
-            />
-
-            <TaskSection
-              title="In Progress"
-              tasks={inProgressTasks}
-              column={boardData?.columns?.find((c) => c.name === 'In Progress')}
-              count={inProgressTasks.length}
-              onUpdate={setSelectedTask}
-              onDelete={handleDeleteTask}
-              onAddTask={() => {
-                const column = boardData?.columns?.find((c) => c.name === 'In Progress');
-                if (column) {
-                  setSelectedTask({
-                    id: 'new',
-                    title: '',
-                    description: '',
-                    column_id: column.id,
-                    priority: 'medium',
-                  });
-                }
-              }}
-            />
-
-            <TaskSection
-              title="Done"
-              tasks={doneTasks}
-              column={boardData?.columns?.find((c) => c.name === 'Done')}
-              count={doneTasks.length}
-              onUpdate={setSelectedTask}
-              onDelete={handleDeleteTask}
-              onAddTask={() => {
-                const column = boardData?.columns?.find((c) => c.name === 'Done');
-                if (column) {
-                  setSelectedTask({
-                    id: 'new',
-                    title: '',
-                    description: '',
-                    column_id: column.id,
-                    priority: 'medium',
-                  });
-                }
-              }}
-            />
-          </div>
         );
     }
   };
@@ -294,7 +207,7 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
       {/* View Switcher */}
       <div style={{ borderBottomColor: '#e5e7eb', borderBottomWidth: '1px', paddingLeft: '24px', paddingRight: '24px', paddingTop: '8px', paddingBottom: '8px', backgroundColor: '#f3f4f6' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {['sections', 'kanban', 'gantt', 'calendar'].map((view) => (
+          {['sections', 'calendar'].map((view) => (
             <button
               key={view}
               onClick={() => setCurrentView(view)}
