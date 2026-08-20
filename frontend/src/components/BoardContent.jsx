@@ -243,14 +243,17 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    fontSize: '18px',
-                    color: '#9ca3af',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    color: '#2563eb',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
                   }}
-                  onMouseEnter={(e) => (e.target.style.color = '#2563eb')}
-                  onMouseLeave={(e) => (e.target.style.color = '#9ca3af')}
+                  onMouseEnter={(e) => (e.target.style.backgroundColor = '#dbeafe')}
+                  onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                   title="Edit board name"
                 >
-                  ✏️
+                  Edit
                 </button>
               </div>
             )}
