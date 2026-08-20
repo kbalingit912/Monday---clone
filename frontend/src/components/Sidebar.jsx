@@ -139,8 +139,8 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
     <aside style={sidebarStyle}>
       {/* Header */}
       <div style={headerStyle}>
-        <div style={titleStyle}>Smart Schedule</div>
-        <p style={subtitleStyle}>Task Manager</p>
+        <div style={titleStyle}>FlowMaster</div>
+        <p style={subtitleStyle}>Scheduling & Trading</p>
       </div>
 
       {/* Navigation */}
@@ -316,7 +316,7 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
 
       {/* Footer */}
       <div style={footerStyle}>
-        <p>© 2026 Smart Schedule</p>
+        <p>© 2026 FlowMaster</p>
       </div>
     </aside>
   );
