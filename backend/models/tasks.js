@@ -35,10 +35,14 @@ const Tasks = {
     const recurrence_pattern = metadata?.recurrence_pattern || null;
     const recurrence_end_date = metadata?.recurrence_end_date || null;
 
+    console.log('Tasks.create() - metadata:', metadata);
+    console.log('Tasks.create() - extracted recurring:', { is_recurring, recurrence_pattern, recurrence_end_date });
+
     db.run(
       'INSERT INTO tasks (id, column_id, title, description, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [id, columnId, title, description, position, priority, assignee, due_date, labels, is_recurring, recurrence_pattern, recurrence_end_date, now, now],
       function(err) {
+        if (err) console.error('INSERT ERROR:', err);
         callback(err, {
           id,
           column_id: columnId,

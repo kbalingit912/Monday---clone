@@ -39,24 +39,21 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
     setIsSaving(true);
     try {
       const isNewTask = task.id === 'new';
+      const metadata = {
+        priority,
+        assignee: assignee || null,
+        due_date: dueDate || null,
+        labels: selectedTags,
+        is_recurring: isRecurring ? 1 : 0,
+        recurrence_pattern: isRecurring ? recurrencePattern : null,
+        recurrence_end_date: isRecurring && recurrenceEndDate ? recurrenceEndDate : null
+      };
+      console.log('Saving task with metadata:', metadata);
 
       if (isNewTask) {
-        await tasksAPI.create(
-          task.column_id,
-          title,
-          description,
-          0,
-          { priority, assignee: assignee || null, due_date: dueDate || null, labels: selectedTags, is_recurring: isRecurring ? 1 : 0, recurrence_pattern: isRecurring ? recurrencePattern : null, recurrence_end_date: isRecurring && recurrenceEndDate ? recurrenceEndDate : null }
-        );
+        await tasksAPI.create(task.column_id, title, description, 0, metadata);
       } else {
-        await tasksAPI.update(
-          task.id,
-          title,
-          description,
-          task.column_id,
-          task.position,
-          { priority, assignee: assignee || null, due_date: dueDate || null, labels: selectedTags, is_recurring: isRecurring ? 1 : 0, recurrence_pattern: isRecurring ? recurrencePattern : null, recurrence_end_date: isRecurring && recurrenceEndDate ? recurrenceEndDate : null }
-        );
+        await tasksAPI.update(task.id, title, description, task.column_id, task.position, metadata);
       }
       onSave?.();
     } catch (err) {
