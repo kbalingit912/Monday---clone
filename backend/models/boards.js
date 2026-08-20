@@ -47,7 +47,7 @@ const Boards = {
         if (err) return callback(err);
 
         // Create default columns
-        const defaultColumns = ['To Do', 'In Progress', 'Done'];
+        const defaultColumns = ['To Do', 'Done'];
         let created = 0;
 
         defaultColumns.forEach((colName, index) => {
