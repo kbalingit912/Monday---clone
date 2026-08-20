@@ -125,15 +125,21 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
               }}
               onDelete={handleDeleteTask}
               onAddTask={() => {
+                console.log('onAddTask called, boardData:', boardData);
                 const column = boardData?.columns?.find((c) => c.name === 'To Do');
+                console.log('Found column:', column);
                 if (column) {
-                  setSelectedTask({
+                  const newTask = {
                     id: 'new',
                     title: '',
                     description: '',
                     column_id: column.id,
                     priority: 'medium',
-                  });
+                  };
+                  console.log('Setting task:', newTask);
+                  setSelectedTask(newTask);
+                } else {
+                  console.log('Column not found');
                 }
               }}
             />
