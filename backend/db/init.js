@@ -67,11 +67,28 @@ db.serialize(() => {
       assignee TEXT,
       due_date DATE,
       labels TEXT,
+      is_recurring INTEGER DEFAULT 0,
+      recurrence_pattern TEXT,
+      recurrence_end_date DATE,
+      parent_task_id TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(column_id) REFERENCES columns(id)
+      FOREIGN KEY(column_id) REFERENCES columns(id),
+      FOREIGN KEY(parent_task_id) REFERENCES tasks(id)
     )
   `);
+
+  // Add recurring columns if they don't exist
+  db.run(`PRAGMA table_info(tasks)`, (err, rows) => {
+    if (err) return;
+    const hasRecurring = rows?.some(col => col.name === 'is_recurring');
+    if (!hasRecurring) {
+      db.run('ALTER TABLE tasks ADD COLUMN is_recurring INTEGER DEFAULT 0');
+      db.run('ALTER TABLE tasks ADD COLUMN recurrence_pattern TEXT');
+      db.run('ALTER TABLE tasks ADD COLUMN recurrence_end_date DATE');
+      db.run('ALTER TABLE tasks ADD COLUMN parent_task_id TEXT');
+    }
+  });
 
   // Tags table for autocomplete
   db.run(`

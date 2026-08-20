@@ -18,6 +18,9 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
   const parsedLabels = Array.isArray(labels) ? labels : (typeof labels === 'string' ? JSON.parse(labels) : []);
   const [selectedTags, setSelectedTags] = useState(parsedLabels);
   const [newTagName, setNewTagName] = useState('');
+  const [isRecurring, setIsRecurring] = useState(task?.is_recurring || false);
+  const [recurrencePattern, setRecurrencePattern] = useState(task?.recurrence_pattern || 'weekly');
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState(task?.recurrence_end_date || '');
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -43,7 +46,7 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
           title,
           description,
           0,
-          { priority, assignee: assignee || null, due_date: dueDate || null, labels: selectedTags }
+          { priority, assignee: assignee || null, due_date: dueDate || null, labels: selectedTags, is_recurring: isRecurring ? 1 : 0, recurrence_pattern: isRecurring ? recurrencePattern : null, recurrence_end_date: isRecurring && recurrenceEndDate ? recurrenceEndDate : null }
         );
       } else {
         await tasksAPI.update(
@@ -52,7 +55,7 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
           description,
           task.column_id,
           task.position,
-          { priority, assignee: assignee || null, due_date: dueDate || null, labels: selectedTags }
+          { priority, assignee: assignee || null, due_date: dueDate || null, labels: selectedTags, is_recurring: isRecurring ? 1 : 0, recurrence_pattern: isRecurring ? recurrencePattern : null, recurrence_end_date: isRecurring && recurrenceEndDate ? recurrenceEndDate : null }
         );
       }
       onSave?.();
@@ -138,6 +141,48 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
             onChange={(e) => setDueDate(e.target.value)}
             style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '14px', backgroundColor: 'white', color: '#2d2d2d', boxSizing: 'border-box', fontFamily: 'inherit' }}
           />
+        </div>
+
+        {/* Recurring Task */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <input
+              type="checkbox"
+              id="recurring"
+              checked={isRecurring}
+              onChange={(e) => setIsRecurring(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <label htmlFor="recurring" style={{ fontSize: '14px', fontWeight: '600', color: '#2d2d2d', cursor: 'pointer' }}>Make this task recurring</label>
+          </div>
+
+          {isRecurring && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '12px', backgroundColor: '#faf8f7', borderRadius: '6px', borderLeftWidth: '4px', borderLeftColor: '#9b8673' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#2d2d2d', marginBottom: '6px' }}>Repeat Pattern</label>
+                <select
+                  value={recurrencePattern}
+                  onChange={(e) => setRecurrencePattern(e.target.value)}
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '13px', backgroundColor: 'white', color: '#2d2d2d', boxSizing: 'border-box', fontFamily: 'inherit' }}
+                >
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="fortnight">Every 2 weeks (Fortnight)</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#2d2d2d', marginBottom: '6px' }}>End Recurrence (Optional)</label>
+                <input
+                  type="date"
+                  value={recurrenceEndDate}
+                  onChange={(e) => setRecurrenceEndDate(e.target.value)}
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '13px', backgroundColor: 'white', color: '#2d2d2d', boxSizing: 'border-box', fontFamily: 'inherit' }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
