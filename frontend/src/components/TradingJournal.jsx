@@ -6,12 +6,17 @@ export function TradingJournal() {
   const [importing, setImporting] = useState(false);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
+    session: '',
     symbol: 'XAU/USD',
+    direction: '',
     entryPrice: '',
+    stopLoss: '',
+    takeProfit: '',
     exitPrice: '',
     positionSize: '',
-    notes: '',
-    outcome: 'pending'
+    riskAmount: '',
+    pnlAmount: '',
+    notes: ''
   });
 
   const handleAddTrade = () => {
@@ -235,7 +240,8 @@ export function TradingJournal() {
             New Trade Entry
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+          {/* Row 1: Date, Session, Symbol */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
             <div>
               <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
                 Date
@@ -256,7 +262,26 @@ export function TradingJournal() {
             </div>
             <div>
               <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
-                Symbol
+                Session
+              </label>
+              <input
+                type="text"
+                value={formData.session}
+                onChange={(e) => setFormData({ ...formData, session: e.target.value })}
+                placeholder="e.g., Asian, European, US"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Symbol/Currency
               </label>
               <input
                 type="text"
@@ -274,7 +299,29 @@ export function TradingJournal() {
             </div>
           </div>
 
+          {/* Row 2: Direction, Entry, Stop Loss */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Direction
+              </label>
+              <select
+                value={formData.direction}
+                onChange={(e) => setFormData({ ...formData, direction: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <option value="">Select...</option>
+                <option value="Long">Long</option>
+                <option value="Short">Short</option>
+              </select>
+            </div>
             <div>
               <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
                 Entry Price
@@ -285,6 +332,50 @@ export function TradingJournal() {
                 value={formData.entryPrice}
                 onChange={(e) => setFormData({ ...formData, entryPrice: e.target.value })}
                 placeholder="e.g., 4512.50"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Stop Loss
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.stopLoss}
+                onChange={(e) => setFormData({ ...formData, stopLoss: e.target.value })}
+                placeholder="e.g., 4500.00"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Row 3: Take Profit, Exit, Lots */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Take Profit
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.takeProfit}
+                onChange={(e) => setFormData({ ...formData, takeProfit: e.target.value })}
+                placeholder="e.g., 4530.00"
                 style={{
                   width: '100%',
                   padding: '8px',
@@ -317,7 +408,7 @@ export function TradingJournal() {
             </div>
             <div>
               <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
-                Position Size
+                Lots/Position Size
               </label>
               <input
                 type="number"
@@ -337,6 +428,51 @@ export function TradingJournal() {
             </div>
           </div>
 
+          {/* Row 4: Risk $ and P/L $ */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Risk $ (Risk Amount)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.riskAmount}
+                onChange={(e) => setFormData({ ...formData, riskAmount: e.target.value })}
+                placeholder="e.g., 500"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                P/L $ (Profit/Loss)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.pnlAmount}
+                onChange={(e) => setFormData({ ...formData, pnlAmount: e.target.value })}
+                placeholder="Auto-calculated if blank"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Trade Notes */}
           <div style={{ marginBottom: '12px' }}>
             <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
               Trade Notes
@@ -344,7 +480,7 @@ export function TradingJournal() {
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Entry reasons, technical levels, market conditions..."
+              placeholder="Entry reasons, technical levels, market conditions, lessons learned..."
               style={{
                 width: '100%',
                 padding: '8px',
@@ -369,8 +505,11 @@ export function TradingJournal() {
               borderRadius: '6px',
               fontSize: '14px',
               fontWeight: '600',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'all 0.2s'
             }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#059669'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#10b981'}
           >
             ✓ Save Trade
           </button>
