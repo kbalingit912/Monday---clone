@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { PullNewsBrief } from './PullNewsBrief';
 import { TradingJournal } from './TradingJournal';
 
 export function TradingAssistant() {
-  const [showNewsBrief, setShowNewsBrief] = useState(false);
   const [activeTab, setActiveTab] = useState('analyzer');
 
   return (
@@ -50,37 +48,6 @@ export function TradingAssistant() {
         </button>
       </div>
 
-      {/* Analyzer Toolbar */}
-      {activeTab === 'analyzer' && (
-        <div style={{
-          padding: '16px 24px',
-          backgroundColor: '#ffffff',
-          borderBottom: '1px solid #e5e7eb',
-          display: 'flex',
-          gap: '12px',
-          alignItems: 'center'
-        }}>
-          <button
-            onClick={() => setShowNewsBrief(true)}
-            style={{
-              backgroundColor: '#2563eb',
-              color: '#ffffff',
-              border: 'none',
-              padding: '10px 24px',
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
-          >
-            📰 Pull News Brief
-          </button>
-        </div>
-      )}
 
       {/* Content Area */}
       {activeTab === 'analyzer' ? (
@@ -114,8 +81,6 @@ export function TradingAssistant() {
         <TradingJournal />
       )}
 
-      {/* News Brief Modal */}
-      {showNewsBrief && <PullNewsBrief onClose={() => setShowNewsBrief(false)} />}
     </div>
   );
 }
