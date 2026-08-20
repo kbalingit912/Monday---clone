@@ -147,6 +147,20 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
               count={inProgressTasks.length}
               onUpdate={setSelectedTask}
               onDelete={handleDeleteTask}
+              onAddTask={() => {
+                const column = boardData?.columns?.find((c) => c.name === 'In Progress');
+                if (column) {
+                  setSelectedTask({
+                    id: 'new',
+                    title: '',
+                    description: '',
+                    column_id: column.id,
+                    priority: 'medium',
+                  });
+                } else {
+                  showToast('Could not find In Progress column', 'error');
+                }
+              }}
             />
 
             <TaskSection
@@ -156,6 +170,20 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
               count={doneTasks.length}
               onUpdate={setSelectedTask}
               onDelete={handleDeleteTask}
+              onAddTask={() => {
+                const column = boardData?.columns?.find((c) => c.name === 'Done');
+                if (column) {
+                  setSelectedTask({
+                    id: 'new',
+                    title: '',
+                    description: '',
+                    column_id: column.id,
+                    priority: 'medium',
+                  });
+                } else {
+                  showToast('Could not find Done column', 'error');
+                }
+              }}
             />
           </div>
         );
