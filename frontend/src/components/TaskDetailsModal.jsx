@@ -112,11 +112,11 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-96 overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">{task.id === 'new' ? 'Create Task' : 'Edit Task'}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
+    <div style={{ position: 'fixed', inset: '0', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: '9999' }}>
+      <div style={{ backgroundColor: '#f5f3f0', borderRadius: '8px', padding: '32px', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#3d3d3d' }}>{task.id === 'new' ? 'Create Task' : 'Edit Task'}</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#999' }}>✕</button>
         </div>
 
         {errors.save && (
@@ -126,8 +126,8 @@ export function TaskDetailsModal({ task, projectId, onClose, onSave, tags = [], 
         )}
 
         {/* Title & Description */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <div style={{ marginBottom: '24px' }}>
+          <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#111827', marginBottom: '8px' }}>Title *</label>
           <input
             type="text"
             value={title}
