@@ -1,5 +1,109 @@
 import { useState } from 'react';
 
+const sidebarStyle = {
+  backgroundColor: '#1f2937',
+  color: '#ffffff',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100vh',
+  width: '256px',
+  borderRightWidth: '1px',
+  borderRightColor: '#374151',
+};
+
+const headerStyle = {
+  padding: '24px',
+  borderBottomWidth: '1px',
+  borderBottomColor: '#374151',
+};
+
+const titleStyle = {
+  fontSize: '24px',
+  fontWeight: 'bold',
+  color: '#ffffff',
+};
+
+const subtitleStyle = {
+  color: '#9ca3af',
+  fontSize: '14px',
+  marginTop: '4px',
+};
+
+const navStyle = {
+  flex: 1,
+  overflowY: 'auto',
+  padding: '16px',
+};
+
+const bindersHeaderStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '12px',
+};
+
+const bindersLabelStyle = {
+  fontSize: '12px',
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  color: '#9ca3af',
+};
+
+const plusButtonStyle = {
+  color: '#9ca3af',
+  fontSize: '20px',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: '0 4px',
+};
+
+const emptyStateStyle = {
+  color: '#9ca3af',
+  fontSize: '13px',
+  padding: '12px',
+  textAlign: 'center',
+};
+
+const projectButtonStyle = {
+  width: '100%',
+  textAlign: 'left',
+  padding: '10px 12px',
+  borderRadius: '8px',
+  transition: 'all 0.2s',
+  background: 'transparent',
+  color: '#d1d5db',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  fontWeight: '500',
+  marginBottom: '4px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+};
+
+const boardButtonStyle = {
+  width: '100%',
+  textAlign: 'left',
+  padding: '8px 12px',
+  borderRadius: '6px',
+  fontSize: '13px',
+  background: 'transparent',
+  color: '#9ca3af',
+  border: 'none',
+  cursor: 'pointer',
+  marginBottom: '2px',
+};
+
+const footerStyle = {
+  padding: '16px',
+  borderTopWidth: '1px',
+  borderTopColor: '#374151',
+  fontSize: '12px',
+  color: '#9ca3af',
+};
+
 export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSelectBoard, onSelectProject, onCreateBoard }) {
   const [expandedProject, setExpandedProject] = useState(selectedProject);
 
@@ -9,21 +113,19 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
   };
 
   return (
-    <aside style={{ backgroundColor: '#1f2937' }} className="w-64 text-white flex flex-col h-screen border-r" style={{ borderColor: '#374151' }}>
+    <aside style={sidebarStyle}>
       {/* Header */}
-      <div className="p-6" style={{ borderBottomColor: '#374151', borderBottomWidth: '1px' }}>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ffffff' }}>Smart Schedule</div>
-        <p style={{ color: '#9ca3af', fontSize: '14px', marginTop: '4px' }}>Task Manager</p>
+      <div style={headerStyle}>
+        <div style={titleStyle}>Smart Schedule</div>
+        <p style={subtitleStyle}>Task Manager</p>
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div style={navStyle}>
         {/* Binders Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between px-3 mb-3">
-            <h2 style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#9ca3af' }}>
-              Binders
-            </h2>
+        <div style={{ marginBottom: '24px' }}>
+          <div style={bindersHeaderStyle}>
+            <h2 style={bindersLabelStyle}>Binders</h2>
             <button
               onClick={() => {
                 const projectName = prompt('Enter project name:');
@@ -33,14 +135,7 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
                   );
                 }
               }}
-              style={{
-                color: '#9ca3af',
-                fontSize: '20px',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '0 4px',
-              }}
+              style={plusButtonStyle}
               onMouseEnter={(e) => (e.target.style.color = '#d1d5db')}
               onMouseLeave={(e) => (e.target.style.color = '#9ca3af')}
               title="Create new project"
@@ -50,27 +145,19 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
           </div>
 
           {projects.length === 0 ? (
-            <div style={{ color: '#9ca3af', fontSize: '13px', padding: '12px', textAlign: 'center' }}>
+            <div style={emptyStateStyle}>
               No projects yet. Click + to create one.
             </div>
           ) : (
-            <div className="space-y-1">
+            <div>
               {projects.map((project) => (
-                <div key={project.id}>
+                <div key={project.id} style={{ marginBottom: '4px' }}>
                   <button
                     onClick={() => toggleProject(project.id)}
                     style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      transition: 'all 0.2s',
+                      ...projectButtonStyle,
                       background: selectedProject?.id === project.id ? '#2563eb' : 'transparent',
                       color: selectedProject?.id === project.id ? '#ffffff' : '#d1d5db',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '500',
                     }}
                     onMouseEnter={(e) => {
                       if (selectedProject?.id !== project.id) {
@@ -83,17 +170,15 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
                       }
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>{project.name}</span>
-                      <span style={{ fontSize: '12px', color: selectedProject?.id === project.id ? '#e5e7eb' : '#9ca3af' }}>
-                        {boards.filter((b) => b.project_id === project.id).length}
-                      </span>
-                    </div>
+                    <span>{project.name}</span>
+                    <span style={{ fontSize: '12px', color: selectedProject?.id === project.id ? '#e5e7eb' : '#9ca3af' }}>
+                      {boards.filter((b) => b.project_id === project.id).length}
+                    </span>
                   </button>
 
                   {/* Boards for expanded project */}
                   {expandedProject === project.id && (
-                    <div style={{ marginLeft: '12px', marginTop: '8px', borderLeftColor: '#374151', borderLeftWidth: '1px', paddingLeft: '12px', space: '4px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ marginLeft: '12px', marginTop: '8px', borderLeftWidth: '1px', borderLeftColor: '#374151', paddingLeft: '12px' }}>
                       {boards
                         .filter((b) => b.project_id === project.id)
                         .map((board) => (
@@ -101,16 +186,9 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
                             key={board.id}
                             onClick={() => onSelectBoard(board, project)}
                             style={{
-                              width: '100%',
-                              textAlign: 'left',
-                              padding: '8px 12px',
-                              borderRadius: '6px',
-                              fontSize: '13px',
-                              transition: 'all 0.2s',
+                              ...boardButtonStyle,
                               background: selectedBoard?.id === board.id ? '#1d4ed8' : 'transparent',
                               color: selectedBoard?.id === board.id ? '#ffffff' : '#9ca3af',
-                              border: 'none',
-                              cursor: 'pointer',
                             }}
                             onMouseEnter={(e) => {
                               if (selectedBoard?.id !== board.id) {
@@ -129,15 +207,8 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
                       <button
                         onClick={() => onCreateBoard(project.id)}
                         style={{
-                          width: '100%',
-                          textAlign: 'left',
-                          padding: '8px 12px',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          background: 'transparent',
+                          ...boardButtonStyle,
                           color: '#6b7280',
-                          border: 'none',
-                          cursor: 'pointer',
                         }}
                         onMouseEnter={(e) => (e.target.style.color = '#9ca3af')}
                         onMouseLeave={(e) => (e.target.style.color = '#6b7280')}
@@ -154,7 +225,7 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
       </div>
 
       {/* Footer */}
-      <div style={{ padding: '16px', borderTopColor: '#374151', borderTopWidth: '1px', fontSize: '12px', color: '#9ca3af' }}>
+      <div style={footerStyle}>
         <p>© 2026 Smart Schedule</p>
       </div>
     </aside>
