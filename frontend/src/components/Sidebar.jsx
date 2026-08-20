@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { projectsAPI } from '../api';
 
 const sidebarStyle = {
   backgroundColor: '#1f2937',
@@ -106,10 +107,32 @@ const footerStyle = {
 
 export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSelectBoard, onSelectProject, onCreateBoard }) {
   const [expandedProject, setExpandedProject] = useState(selectedProject);
+  const [editingProjectId, setEditingProjectId] = useState(null);
+  const [editingProjectName, setEditingProjectName] = useState('');
 
   const toggleProject = (projectId) => {
     setExpandedProject(expandedProject === projectId ? null : projectId);
     onSelectProject(projectId);
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProjectId(project.id);
+    setEditingProjectName(project.name);
+  };
+
+  const handleSaveProjectName = async (projectId) => {
+    if (!editingProjectName.trim()) {
+      setEditingProjectId(null);
+      return;
+    }
+    try {
+      await projectsAPI.update(projectId, editingProjectName, '');
+      setEditingProjectId(null);
+      // Trigger a refresh - dispatch custom event
+      window.dispatchEvent(new Event('projectsUpdated'));
+    } catch (err) {
+      console.error('Failed to update project:', err);
+    }
   };
 
   return (
@@ -152,29 +175,96 @@ export function Sidebar({ projects, selectedProject, boards, selectedBoard, onSe
             <div>
               {projects.map((project) => (
                 <div key={project.id} style={{ marginBottom: '4px' }}>
-                  <button
-                    onClick={() => toggleProject(project.id)}
-                    style={{
-                      ...projectButtonStyle,
-                      background: selectedProject?.id === project.id ? '#2563eb' : 'transparent',
-                      color: selectedProject?.id === project.id ? '#ffffff' : '#d1d5db',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (selectedProject?.id !== project.id) {
-                        e.target.style.backgroundColor = '#374151';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selectedProject?.id !== project.id) {
-                        e.target.style.backgroundColor = 'transparent';
-                      }
-                    }}
-                  >
-                    <span>{project.name}</span>
-                    <span style={{ fontSize: '12px', color: selectedProject?.id === project.id ? '#e5e7eb' : '#9ca3af' }}>
-                      {boards.filter((b) => b.project_id === project.id).length}
-                    </span>
-                  </button>
+                  {editingProjectId === project.id ? (
+                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center', padding: '8px 12px' }}>
+                      <input
+                        type="text"
+                        value={editingProjectName}
+                        onChange={(e) => setEditingProjectName(e.target.value)}
+                        autoFocus
+                        style={{
+                          flex: 1,
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          border: '1px solid #4b5563',
+                          backgroundColor: '#2d3748',
+                          color: '#ffffff',
+                          fontSize: '13px',
+                        }}
+                      />
+                      <button
+                        onClick={() => handleSaveProjectName(project.id)}
+                        style={{
+                          padding: '4px 8px',
+                          backgroundColor: '#10b981',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                        }}
+                      >
+                        ✓
+                      </button>
+                      <button
+                        onClick={() => setEditingProjectId(null)}
+                        style={{
+                          padding: '4px 8px',
+                          backgroundColor: '#ef4444',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => toggleProject(project.id)}
+                        style={{
+                          ...projectButtonStyle,
+                          background: selectedProject?.id === project.id ? '#2563eb' : 'transparent',
+                          color: selectedProject?.id === project.id ? '#ffffff' : '#d1d5db',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (selectedProject?.id !== project.id) {
+                            e.target.style.backgroundColor = '#374151';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (selectedProject?.id !== project.id) {
+                            e.target.style.backgroundColor = 'transparent';
+                          }
+                        }}
+                      >
+                        <span>{project.name}</span>
+                        <span style={{ fontSize: '12px', color: selectedProject?.id === project.id ? '#e5e7eb' : '#9ca3af' }}>
+                          {boards.filter((b) => b.project_id === project.id).length}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => handleEditProject(project)}
+                        style={{
+                          marginLeft: '8px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          color: '#9ca3af',
+                          padding: '2px 4px',
+                        }}
+                        title="Edit project name"
+                      >
+                        ✎
+                      </button>
+                    </>
+                  )}
 
                   {/* Boards for expanded project */}
                   {expandedProject === project.id && (

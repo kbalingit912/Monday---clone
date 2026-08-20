@@ -24,8 +24,17 @@ export function MainLayout() {
       }
     };
 
+    // Listen for project update events
+    const handleProjectsUpdated = async () => {
+      await loadProjects();
+    };
+
     window.addEventListener('createProject', handleCreateProject);
-    return () => window.removeEventListener('createProject', handleCreateProject);
+    window.addEventListener('projectsUpdated', handleProjectsUpdated);
+    return () => {
+      window.removeEventListener('createProject', handleCreateProject);
+      window.removeEventListener('projectsUpdated', handleProjectsUpdated);
+    };
   }, []);
 
   const loadProjects = async () => {
