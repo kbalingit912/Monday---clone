@@ -58,9 +58,12 @@ export function BoardContent({ board, project, onBack, onRefresh }) {
 
     try {
       await boardsAPI.update(boardData.id, editedName);
-      setBoardData({ ...boardData, name: editedName });
+      const updatedBoardData = { ...boardData, name: editedName };
+      setBoardData(updatedBoardData);
       setIsEditingName(false);
       showToast('Board renamed successfully', 'success');
+      // Refresh parent to update sidebar
+      await onRefresh?.();
     } catch (err) {
       console.error('Failed to rename board:', err);
       showToast('Failed to rename board', 'error');

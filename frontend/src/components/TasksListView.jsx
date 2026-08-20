@@ -24,10 +24,34 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
   const getColumnColor = (columnName) => STATUS_COLORS[columnName] || '#6b7280';
   const getPriorityColor = (priority) => PRIORITY_COLORS[priority] || '#6b7280';
 
+  const getNextDueDate = (currentDate, pattern) => {
+    const date = new Date(currentDate);
+    switch (pattern) {
+      case 'daily':
+        date.setDate(date.getDate() + 1);
+        break;
+      case 'weekly':
+        date.setDate(date.getDate() + 7);
+        break;
+      case 'fortnight':
+        date.setDate(date.getDate() + 14);
+        break;
+      case 'monthly':
+        date.setMonth(date.getMonth() + 1);
+        break;
+      default:
+        break;
+    }
+    return date.toISOString().split('T')[0];
+  };
+
   const handleComplete = async (task) => {
     const doneColumn = board.columns.find(c => c.name === 'Done');
+    const todoColumn = board.columns.find(c => c.name === 'To Do');
+
     if (doneColumn && task.column_name !== 'Done') {
       try {
+        // Move current task to Done
         await tasksAPI.update(task.id, task.title, task.description, doneColumn.id, 0, {
           priority: task.priority,
           assignee: task.assignee,
@@ -37,6 +61,31 @@ export function TasksListView({ board, onEditTask, onDeleteTask, onRefresh }) {
           recurrence_pattern: task.recurrence_pattern,
           recurrence_end_date: task.recurrence_end_date
         });
+
+        // If task is recurring, create next instance
+        if (task.is_recurring && task.recurrence_pattern && todoColumn) {
+          const nextDate = getNextDueDate(task.due_date, task.recurrence_pattern);
+
+          // Check if recurrence should end
+          if (!task.recurrence_end_date || new Date(nextDate) <= new Date(task.recurrence_end_date)) {
+            await tasksAPI.create(
+              todoColumn.id,
+              task.title,
+              task.description,
+              0,
+              {
+                priority: task.priority,
+                assignee: task.assignee,
+                due_date: nextDate,
+                labels: task.labels,
+                is_recurring: 1,
+                recurrence_pattern: task.recurrence_pattern,
+                recurrence_end_date: task.recurrence_end_date
+              }
+            );
+          }
+        }
+
         await onRefresh?.();
       } catch (err) {
         console.error('Failed to mark task complete:', err);
