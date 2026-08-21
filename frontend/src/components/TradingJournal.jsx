@@ -12,6 +12,9 @@ export function TradingJournal({ onAddTrade }) {
     exitPrice: '',
     positionSize: '',
     riskAmount: '',
+    riskRatio: '',
+    riskPercent: '',
+    tradingNotes: '',
     pnlAmount: ''
   });
 
@@ -56,6 +59,9 @@ export function TradingJournal({ onAddTrade }) {
       exitPrice: '',
       positionSize: '',
       riskAmount: '',
+      riskRatio: '',
+      riskPercent: '',
+      tradingNotes: '',
       pnlAmount: ''
     });
     setShowForm(false);
@@ -329,6 +335,71 @@ export function TradingJournal({ onAddTrade }) {
                 }}
               />
             </div>
+          </div>
+
+          {/* Row 5: Risk Ratio and Risk % */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Risk Ratio
+              </label>
+              <input
+                type="text"
+                value={formData.riskRatio}
+                onChange={(e) => setFormData({ ...formData, riskRatio: e.target.value })}
+                placeholder="e.g., 1:2"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+                Risk %
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.riskPercent}
+                onChange={(e) => setFormData({ ...formData, riskPercent: e.target.value })}
+                placeholder="e.g., 2.5"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Trading Notes */}
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+              Trading Notes
+            </label>
+            <textarea
+              value={formData.tradingNotes}
+              onChange={(e) => setFormData({ ...formData, tradingNotes: e.target.value })}
+              placeholder="e.g., Support and resistance, Technical setup, Market conditions..."
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #e5e7eb',
+                borderRadius: '4px',
+                fontSize: '14px',
+                minHeight: '60px',
+                boxSizing: 'border-box',
+                fontFamily: 'inherit'
+              }}
+            />
           </div>
 
           <button
