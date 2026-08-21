@@ -28,9 +28,16 @@ class TradingTrade {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
+      console.log('Creating trade:', { id, date, direction, entryPrice, exitPrice });
+
       db.run(sql, [id, date, session, direction, entryPrice, exitPrice, stopLoss, takeProfit, positionSize, riskAmount, riskRatio, riskPercent, pnl, returnPercent, tradingNotes], (err) => {
-        if (err) reject(err);
-        else resolve({ id, ...trade });
+        if (err) {
+          console.error('Error creating trade:', err);
+          reject(err);
+        } else {
+          console.log('Trade created successfully:', id);
+          resolve({ id, ...trade });
+        }
       });
     });
   }

@@ -9,6 +9,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 db.serialize(() => {
+  console.log('Initializing database tables...');
+
   // Users table
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -113,7 +115,13 @@ db.serialize(() => {
       trading_notes TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `, (err) => {
+    if (err) {
+      console.error('Error creating trading_trades table:', err);
+    } else {
+      console.log('trading_trades table initialized');
+    }
+  });
 
   console.log('Database tables initialized');
 });
