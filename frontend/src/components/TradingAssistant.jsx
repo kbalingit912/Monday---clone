@@ -1,19 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PullNewsBrief } from './PullNewsBrief';
 import { TradingJournal } from './TradingJournal';
 import { TradingSummary } from './TradingSummary';
+import { tradingTradesAPI } from '../api';
 
 export function TradingAssistant() {
   const [showNewsBrief, setShowNewsBrief] = useState(false);
   const [activeTab, setActiveTab] = useState('analyzer');
   const [trades, setTrades] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleAddTrade = (newTrade) => {
-    setTrades([newTrade, ...trades]);
+  // Load trades from backend on mount
+  useEffect(() => {
+    loadTrades();
+  }, []);
+
+  const loadTrades = async () => {
+    try {
+      setLoading(true);
+      const response = await tradingTradesAPI.getAll();
+      setTrades(response.data || []);
+    } catch (error) {
+      console.error('Error loading trades:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteTrade = (id) => {
-    setTrades(trades.filter(t => t.id !== id));
+  const handleAddTrade = async (newTrade) => {
+    try {
+      await tradingTradesAPI.create(newTrade);
+      setTrades([newTrade, ...trades]);
+    } catch (error) {
+      console.error('Error saving trade:', error);
+      alert('Failed to save trade');
+    }
+  };
+
+  const handleDeleteTrade = async (id) => {
+    try {
+      await tradingTradesAPI.delete(id);
+      setTrades(trades.filter(t => t.id !== id));
+    } catch (error) {
+      console.error('Error deleting trade:', error);
+      alert('Failed to delete trade');
+    }
   };
 
   const parseCSV = (text) => {

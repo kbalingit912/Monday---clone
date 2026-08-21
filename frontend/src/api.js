@@ -38,4 +38,12 @@ export const tasksAPI = {
   delete: (id) => api.delete(`/tasks/${id}`),
 };
 
+export const tradingTradesAPI = {
+  getAll: () => api.get('/trading-trades'),
+  getById: (id) => api.get(`/trading-trades/${id}`),
+  create: (trade) => api.post('/trading-trades', trade),
+  update: (id, trade) => api.put(`/trading-trades/${id}`, trade),
+  delete: (id) => api.delete(`/trading-trades/${id}`),
+};
+
 export default api;

@@ -93,6 +93,28 @@ db.serialize(() => {
     )
   `);
 
+  // Trading Journal Trades table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS trading_trades (
+      id TEXT PRIMARY KEY,
+      date TEXT NOT NULL,
+      session TEXT,
+      direction TEXT NOT NULL,
+      entry_price REAL NOT NULL,
+      exit_price REAL NOT NULL,
+      stop_loss REAL,
+      take_profit REAL,
+      position_size REAL,
+      risk_amount REAL,
+      risk_ratio TEXT,
+      risk_percent REAL,
+      pnl REAL,
+      return_percent REAL,
+      trading_notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   console.log('Database tables initialized');
 });
 

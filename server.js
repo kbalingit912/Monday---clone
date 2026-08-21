@@ -25,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'frontend/dist')));
 app.use('/api/projects', require('./backend/routes/projects'));
 app.use('/api/boards', require('./backend/routes/boards'));
 app.use('/api/tasks', require('./backend/routes/tasks'));
+app.use('/api/trading-trades', require('./backend/routes/trading-trades'));
 
 // Health check
 app.get('/api/health', (req, res) => {
