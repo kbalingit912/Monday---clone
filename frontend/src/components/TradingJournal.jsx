@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export function TradingJournal({ onAddTrade }) {
   const [showForm, setShowForm] = useState(false);
@@ -39,7 +40,7 @@ export function TradingJournal({ onAddTrade }) {
     }
 
     const newTrade = {
-      id: Date.now(),
+      id: uuidv4(),
       ...formData,
       pnl: pnl.toFixed(2),
       returnPercent: entry > 0 ? ((pnl / (entry * size)) * 100).toFixed(2) : '0'
