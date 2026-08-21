@@ -22,10 +22,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
 // Routes
-app.use('/api/projects', require('./backend/routes/projects'));
-app.use('/api/boards', require('./backend/routes/boards'));
-app.use('/api/tasks', require('./backend/routes/tasks'));
-app.use('/api/trading-trades', require('./backend/routes/trading-trades'));
+try {
+  app.use('/api/projects', require('./backend/routes/projects'));
+  app.use('/api/boards', require('./backend/routes/boards'));
+  app.use('/api/tasks', require('./backend/routes/tasks'));
+  app.use('/api/trading-trades', require('./backend/routes/trading-trades'));
+} catch (error) {
+  console.error('Error loading routes:', error);
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
