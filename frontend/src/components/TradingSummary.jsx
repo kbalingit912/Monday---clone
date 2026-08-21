@@ -1,8 +1,63 @@
+import * as XLSX from 'xlsx';
+
 export function TradingSummary({ trades, onDeleteTrade }) {
   const totalPnL = trades.reduce((sum, t) => sum + parseFloat(t.pnl), 0).toFixed(2);
   const winRate = trades.length > 0
     ? ((trades.filter(t => parseFloat(t.pnl) > 0).length / trades.length) * 100).toFixed(1)
     : 0;
+
+  const handleExportExcel = () => {
+    if (trades.length === 0) {
+      alert('No trades to export!');
+      return;
+    }
+
+    // Prepare data for Excel
+    const exportData = trades.map((trade, idx) => ({
+      '#': idx + 1,
+      'Date': trade.date,
+      'Session': trade.session || '—',
+      'Direction': trade.direction,
+      'Entry Price': trade.entryPrice,
+      'Exit Price': trade.exitPrice,
+      'Stop Loss': trade.stopLoss || '—',
+      'Take Profit': trade.takeProfit || '—',
+      'Lots': trade.positionSize,
+      'Risk Ratio': trade.riskRatio || '—',
+      'Risk %': trade.riskPercent ? `${trade.riskPercent}%` : '—',
+      'P/L $': trade.pnl,
+      'Return %': `${trade.returnPercent}%`,
+      'Notes': trade.tradingNotes || '—'
+    }));
+
+    // Create workbook and worksheet
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Trades');
+
+    // Style the header row
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const address = XLSX.utils.encode_cell({ r: 0, c: C });
+      if (!ws[address]) continue;
+      ws[address].s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '2563EB' } },
+        alignment: { horizontal: 'center', vertical: 'center' }
+      };
+    }
+
+    // Adjust column widths
+    const columnWidths = [4, 12, 12, 10, 12, 12, 12, 12, 8, 12, 10, 10, 10, 20];
+    ws['!cols'] = columnWidths.map(width => ({ wch: width }));
+
+    // Generate filename with date
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `Trading_Summary_${date}.xlsx`;
+
+    // Write file
+    XLSX.writeFile(wb, filename);
+  };
 
   return (
     <div style={{ padding: '24px', height: '100%', overflowY: 'auto', backgroundColor: '#f9fafb' }}>
@@ -48,6 +103,28 @@ export function TradingSummary({ trades, onDeleteTrade }) {
             {trades.length}
           </p>
         </div>
+      </div>
+
+      {/* Export Button */}
+      <div style={{ marginBottom: '16px' }}>
+        <button
+          onClick={handleExportExcel}
+          style={{
+            backgroundColor: '#2563eb',
+            color: '#ffffff',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+        >
+          📥 Export to Excel
+        </button>
       </div>
 
       {/* Trade Table */}
